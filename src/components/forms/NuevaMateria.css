@@ -1,0 +1,119 @@
+/* Contenedor principal */
+.nueva-materia-container {
+    position: fixed;
+    top: 37%; /* Ajustado para subir el contenedor */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #eae1e1;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    width: 420px;
+    z-index: 2000;
+    transition: all 0.3s ease;
+}
+
+/* Título */
+.nueva-materia-container h2 {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 25px 0; /* Elimina el margen superior y deja solo el margen inferior */
+    color: #333333;
+}
+
+/* Campos del formulario */
+.nueva-materia-container .form-group {
+    margin-bottom: 6px; /* Reduce el margen inferior */
+    display: flex;
+    flex-direction: column; /* Alinea verticalmente */
+    gap: 4px; /* Reduce el espacio entre el label y el input/select */
+}
+
+/* Contenedor horizontal para Año y Nombre de la materia */
+.nueva-materia-container .form-group-horizontal {
+    display: flex; /* Alinea los elementos en fila */
+    gap: 10px; /* Reduce el espacio entre los elementos */
+}
+
+/* Etiquetas en negrita */
+.nueva-materia-container label {
+    font-size: 14px;
+    font-weight: bold; /* Cambiado a negrita */
+    margin: 0; /* Elimina cualquier margen */
+    color: #4a4a4a;
+    text-align: left; /* Alinea el texto a la izquierda */
+}
+
+/* Inputs y selects */
+.nueva-materia-container input,
+.nueva-materia-container select {
+    width: 100%;
+    padding: 6px; /* Reduce el padding */
+    border: 1px solid #d1d1d1;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    color: #333333;
+    transition: all 0.3s ease;
+    margin: 0; /* Elimina cualquier margen */
+}
+
+/* Clase específica para el input y select reducido */
+.nueva-materia-container input.input-reducido,
+.nueva-materia-container select.select-reducido {
+    width: 180px; /* Ajusta el ancho del input/select reducido */
+}
+
+.nueva-materia-container select.select-reducido{
+    width: 205px;
+}
+
+/* Efecto en foco */
+.nueva-materia-container input:focus,
+.nueva-materia-container select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Contenedor de botones */
+.nueva-materia-container .form-buttons {
+    display: flex; /* Alineación horizontal */
+    justify-content: center; /* Botones alineados a la derecha */
+    gap: 15px; /* Espacio entre los botones */
+    margin-top: 20px;
+}
+
+/* Botones */
+.nueva-materia-container .btn-primary {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nueva-materia-container .btn-secondary {
+    background-color: #6c757d;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Hover para botones */
+.nueva-materia-container .btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 91, 187, 0.3);
+}
+
+.nueva-materia-container .btn-secondary:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

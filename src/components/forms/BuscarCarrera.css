@@ -1,0 +1,234 @@
+/* Contenedor principal */
+.buscar-carrera-container {
+    position: absolute;
+    top: 8%; /* Ajuste para centrar más cerca del título */
+    left: 50%;
+    transform: translateX(-50%); /* Ajustar el centrado horizontal */
+    background: #eae1e1;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    width: 420px;
+    z-index: 2000;
+    transition: all 0.3s ease;
+}
+
+/* Título */
+.buscar-carrera-container h2 {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 10px 0; /* Reducido aún más el margen inferior */
+    color: #333333;
+}
+
+/* Campos del formulario */
+.buscar-carrera-container .form-group {
+    display: flex; /* Habilita Flexbox */
+    flex-direction: column; /* Alinea elementos en columna */
+    align-items: center; /* Centra los elementos */
+    margin-bottom: 15px; /* Espacio más compacto entre los campos */
+    width: 100%; /* Asegura que el contenedor tome el ancho completo */
+}
+
+/* Contenedor para label e input */
+.buscar-carrera-container .input-wrapper {
+    width: 100%; /* Asegura que tome el ancho completo */
+    display: flex; /* Habilita Flexbox */
+    flex-direction: column; /* Alinea elementos en columna */
+    align-items: center; /* Centra los elementos */
+}
+
+/* Etiquetas en negrita */
+.buscar-carrera-container label {
+    font-size: 14px;
+    font-weight: bold; /* Negrita */
+    margin-bottom: 8px;
+    display: block;
+    color: #4a4a4a;
+    width: 100%; /* Asegura que el label tome el ancho completo */
+    text-align: left; /* Alinea el texto del label a la izquierda */
+}
+
+/* Inputs */
+.buscar-carrera-container input {
+    width: 100%; /* Mantiene el ancho completo */
+    max-width: 400px; /* Ajusta el ancho máximo del input */
+    padding: 10px;
+    margin: 0 auto; /* Centra el input */
+    border: 1px solid #d1d1d1;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    color: #333333;
+    transition: all 0.3s ease;
+}
+
+.buscar-carrera-container input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Contenedor de botones */
+.buscar-carrera-container .form-buttons {
+    display: flex; /* Alineación horizontal */
+    justify-content: center; /* Botones alineados a la derecha */     
+    margin-top: 20px; /* Igual que en el botón Guardar */
+    height: 40px;
+}
+
+.resultados-busqueda {
+    margin: -55px auto; /* Centra la tabla horizontalmente */
+    width: 90%; /* Asegura que ocupe un ancho adecuado */
+    max-width: 1000px; /* Limita el ancho máximo */
+    background-color: #f1f6bd; /* Fondo claro */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    border-radius: 12px; /* Bordes redondeados */
+    padding: 1rem; /* Espaciado interno */
+    margin-bottom: 30px; /* Espacio debajo de la tabla */
+  }
+
+/* Estilo de la tabla */
+.resultados-busqueda table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center; /* Centrar el texto en la tabla */
+}
+
+/* Encabezados */
+.resultados-busqueda th {
+    background-color: #4CAF50;  /* Modern green color */
+    color: #ffffff;
+    padding: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    text-align: center; /* Centrar el texto en los encabezados */
+}
+
+/* Celdas */
+.resultados-busqueda td {
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+    text-align: center; /* Centrar el texto en las celdas */
+}
+
+/* Filas alternas */
+.resultados-busqueda tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey for alternate rows */
+}
+
+/* Hover */
+.resultados-busqueda tr:hover {
+    background-color: #ddd; /* Slightly darker grey for hover */
+    transition: all 0.3s ease;
+}
+
+/* Botones en la tabla */
+.resultados-busqueda button {
+    border: none;
+    background: none;
+    font-size: 1.2rem; /* Tamaño del icono */
+    cursor: pointer;
+    margin: 0 5px;
+    transition: transform 0.2s ease;
+}
+
+/* Hover para botones */
+.resultados-busqueda button:hover {
+    transform: scale(1.2); /* Efecto de agrandado */
+}
+
+/* Iconos específicos */
+.edit-btn {
+    color: #4CAF50; /* Verde para editar */
+}
+
+.delete-btn {
+    color: #E53935; /* Rojo para eliminar */
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  
+  .modal-buttons button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .modal-buttons button:first-child {
+    background: #007bff;
+    color: white;
+  }
+  
+  .modal-buttons button:last-child {
+    background: #dc3545;
+    color: white;
+  }
+
+/* Paginación */
+.pagination-row {
+  background-color: #f1f6bd; /* Mismo fondo amarillo de la tabla */
+  text-align: center;
+  padding: 10px 0; /* Espaciado vertical */
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px; /* Espaciado entre botones */
+}
+
+.pagination-container .pagination-btn {
+  width: 28px; /* Reducir tamaño del botón */
+  height: 28px; /* Reducir tamaño del botón */
+  font-size: 13px; /* Tamaño del texto más pequeño */
+  border: 1px solid #dcdcdc; /* Borde gris claro */
+  border-radius: 50%; /* Bordes redondeados */
+  background-color: white; /* Fondo blanco */
+  color: #333; /* Color del texto */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-container .pagination-btn.active {
+  background-color: #007bff; /* Fondo azul */
+  color: white; /* Texto blanco */
+  font-weight: bold; /* Texto en negrita */
+  border-color: #007bff; /* Borde azul */
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3); /* Sombra azul */
+}
+
+.pagination-container .pagination-btn:hover {
+  background-color: #e9ecef; /* Fondo gris claro al pasar el mouse */
+  border-color: #ccc; /* Borde gris */
+}

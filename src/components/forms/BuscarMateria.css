@@ -1,0 +1,116 @@
+/* Contenedor principal */
+.buscar-materia-container {
+    position: absolute;
+    top: 16.7%; /* Ajuste para centrar más cerca del título */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #eae1e1;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    width: 420px;
+    z-index: 2000;
+    transition: all 0.3s ease;
+}
+
+/* Título */
+.buscar-materia-container h2 {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 10px 0; /* Reducido aún más el margen inferior */
+    color: #333333;
+}
+
+/* Campos del formulario */
+.buscar-materia-container .form-group {
+    display: flex; /* Habilita Flexbox */
+    flex-direction: column; /* Alinea elementos en columna */
+    align-items: center; /* Centra los elementos */
+    margin-bottom: 15px; /* Espacio más compacto entre los campos */
+    width: 100%; /* Asegura que el contenedor tome el ancho completo */
+}
+
+/* Contenedor para label e input */
+.buscar-materia-container .input-wrapper {
+    width: 100%; /* Asegura que tome el ancho completo */
+    display: flex; /* Habilita Flexbox */
+    flex-direction: column; /* Alinea elementos en columna */
+    align-items: center; /* Centra los elementos */
+}
+
+/* Etiquetas en negrita */
+.buscar-materia-container label {
+    font-size: 14px;
+    font-weight: bold; /* Negrita */
+    margin-bottom: 8px;
+    display: block;
+    color: #4a4a4a;
+    width: 100%; /* Asegura que el label tome el ancho completo */
+    text-align: left; /* Alinea el texto del label a la izquierda */
+}
+
+/* Inputs */
+.buscar-materia-container input {
+    width: 100%; /* Mantiene el ancho completo */
+    max-width: 400px; /* Ajusta el ancho máximo del input */
+    padding: 10px;
+    margin: 0 auto; /* Centra el input */
+    border: 1px solid #d1d1d1;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    color: #333333;
+    transition: all 0.3s ease;
+}
+
+.buscar-materia-container input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Contenedor de botones */
+.buscar-materia-container .form-buttons {
+    display: flex; /* Alineación horizontal */
+    justify-content: center; /* Botones alineados a la derecha */     
+    margin-top: 20px; /* Igual que en el botón Guardar */
+    height: 40px;
+}
+
+/* Botón Buscar */
+.btn-primary {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px; /* Igual al botón Guardar */
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+/* Hover para el botón Buscar */
+.btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 91, 187, 0.3);
+}
+
+/* Estilo para asegurar que SweetAlert2 aparezca sobre el modal */
+.swal2-container {
+    z-index: 9999 !important; /* Prioridad más alta */
+}
+
+/* Ajuste del fondo oscuro detrás del modal */
+.modal-overlay {
+    z-index: 1000; /* Fondo detrás del modal */
+}
+
+.modal-content {
+    z-index: 1001; /* Contenido principal del modal */
+}
+
+/* Ajuste adicional para centrar el SweetAlert2 correctamente */
+.swal2-popup {
+    z-index: 9999 !important; /* SweetAlert2 sobre todos los elementos */
+}
