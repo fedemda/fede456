@@ -31,6 +31,8 @@ const db = mysql.createConnection({
   user: process.env.DB_USER || "registro_usuarios_4059_user",
   password: process.env.DB_PASS || "P2Yoeom9EtZMBKjPKs4eJTfnV8vWPKj8",
   database: process.env.DB_DATABASE || "registro_usuarios",
+  port: 5432,
+  connectTimeout: 10000  // Aumenta el tiempo de espera a 10 segundos, por ejemplo
 });
 
 // Promisify query function for async/await use
