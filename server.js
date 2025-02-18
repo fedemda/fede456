@@ -1,3 +1,7 @@
+// Cargar variables de entorno desde un archivo .env (para desarrollo)
+// En producción, Render usará las variables de entorno configuradas en su panel.
+require("dotenv").config();
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -5,11 +9,14 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mysql = require("mysql2");
 const util = require("util");
-const path = require("path");   
-const fs = require("fs");  
+const path = require("path");
+const fs = require("fs");
 const XlsxPopulate = require("xlsx-populate");
+
 const app = express();
-const PORT = 5000;
+
+// Configuración del puerto. Render asigna el puerto en la variable PORT.
+const PORT = process.env.PORT || 5000;
 
 // Clave secreta para el token (usar .env en producción)
 const SECRET_KEY = "mi_clave_secreta";
@@ -18,17 +25,18 @@ const SECRET_KEY = "mi_clave_secreta";
 app.use(bodyParser.json());
 app.use(cors());
 
-// Conexión a MySQL
+// Conexión a MySQL usando variables de entorno
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "registro_usuarios",
+  host: process.env.DB_HOST || "localhost",          // Por ejemplo, en Render: db_host.render.com
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASS || "",
+  database: process.env.DB_DATABASE || "registro_usuarios",
 });
 
 // Promisify query function for async/await use
 db.query = util.promisify(db.query);
 
+// Conexión a la base de datos
 db.connect((err) => {
   if (err) {
     console.error("Error conectando a la base de datos:", err);
@@ -37,15 +45,16 @@ db.connect((err) => {
   console.log("Conectado a la base de datos MySQL");
 });
 
-// Middleware para verificar el token
+// Middleware para verificar el token de autenticación
 const verifyToken = (req, res, next) => {
   const token = req.headers["authorization"];
   if (!token) {
     return res.status(403).json({ message: "Token requerido" });
   }
   try {
-    const decoded = jwt.verify(token.split(" ")[1], SECRET_KEY); // Extraemos el token después de "Bearer"
-    req.user = decoded; // Guardamos la info decodificada en req.user
+    // Suponemos que el token se envía como "Bearer <token>"
+    const decoded = jwt.verify(token.split(" ")[1], SECRET_KEY);
+    req.user = decoded;
     next();
   } catch (error) {
     res.status(401).json({ message: "Token inválido" });
