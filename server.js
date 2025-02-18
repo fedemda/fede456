@@ -27,9 +27,9 @@ app.use(cors());
 
 // Conexión a MySQL usando variables de entorno
 const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",          // Por ejemplo, en Render: db_host.render.com
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASS || "",
+  host: process.env.DB_HOST || "dpg-cupt41a3esus738iik5g-a.oregon-postgres.render.com",          // Por ejemplo, en Render: db_host.render.com
+  user: process.env.DB_USER || "registro_usuarios_4059_user",
+  password: process.env.DB_PASS || "P2Yoeom9EtZMBKjPKs4eJTfnV8vWPKj8",
   database: process.env.DB_DATABASE || "registro_usuarios",
 });
 
