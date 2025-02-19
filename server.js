@@ -32,8 +32,12 @@ const db = new Client({
   password: process.env.DB_PASS || "P2Yoeom9EtZMBKjPKs4eJTfnV8vWPKj8",
   database: process.env.DB_DATABASE || "registro_usuarios_4059",
   port: 5432,
-  connectionTimeoutMillis: 10000
+  connectionTimeoutMillis: 10000,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 db.connect(err => {
   if (err) {
