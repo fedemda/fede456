@@ -49,19 +49,23 @@ db.connect(err => {
 
 // Middleware para verificar el token de autenticación
 const verifyToken = (req, res, next) => {
-  const token = req.headers["authorization"];
+  let token = req.headers["authorization"];
   if (!token) {
     return res.status(403).json({ message: "Token requerido" });
   }
+  // Si el token viene con el prefijo "Bearer ", lo removemos
+  if (token.startsWith("Bearer ")) {
+    token = token.slice(7);
+  }
   try {
-    // Suponemos que el token se envía como "Bearer <token>"
-    const decoded = jwt.verify(token.split(" ")[1], SECRET_KEY);
+    const decoded = jwt.verify(token, SECRET_KEY);
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Token inválido" });
+    return res.status(401).json({ message: "Token inválido" });
   }
 };
+
 
 // Ruta para registrar usuarios
 app.post("/register", async (req, res) => {
