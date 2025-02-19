@@ -51,20 +51,23 @@ db.connect(err => {
 const verifyToken = (req, res, next) => {
   let token = req.headers["authorization"];
   if (!token) {
+    console.log("No se recibió token");
     return res.status(403).json({ message: "Token requerido" });
   }
-  // Si el token viene con el prefijo "Bearer ", lo removemos
   if (token.startsWith("Bearer ")) {
     token = token.slice(7);
   }
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
+    console.log("Token decodificado:", decoded);
     req.user = decoded;
     next();
   } catch (error) {
+    console.log("Error al verificar token:", error);
     return res.status(401).json({ message: "Token inválido" });
   }
 };
+
 
 
 // Ruta para registrar usuarios
