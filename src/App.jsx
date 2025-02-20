@@ -2,26 +2,27 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginRegister from "./pages/LoginRegister";
 import Sidebar from "./components/dashboard/Sidebar";
+import "./axiosConfig";
 
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para verificar si está logueado
-  const [userEmail, setUserEmail] = useState(""); // Estado para el email del usuario
+  const [userName, setUserName] = useState(""); // Estado para el nombre del usuario
 
   // Verifica el estado de inicio de sesión al cargar la aplicación
   useEffect(() => {
     const token = localStorage.getItem("token"); // Verifica si existe el token en localStorage
-    const email = localStorage.getItem("userEmail"); // Recupera el email guardado
-    if (token && email) {
+    const storedName = localStorage.getItem("userName"); // Recupera el nombre guardado
+    if (token && storedName) {
       setIsLoggedIn(true); // Mantiene la sesión activa
-      setUserEmail(email); // Restaura el email del usuario
+      setUserName(storedName); // Restaura el nombre del usuario
     }
   }, []);
 
   // Manejar inicio de sesión
-  const handleLogin = (email) => {
-    localStorage.setItem("userEmail", email); // Guarda el email en localStorage
-    setUserEmail(email); // Actualiza el estado
+  const handleLogin = (name) => {
+    localStorage.setItem("userName", name); // Guarda el nombre en localStorage
+    setUserName(name); // Actualiza el estado
     setIsLoggedIn(true); // Marca como logueado
   };
 
@@ -50,37 +51,48 @@ function App() {
           path="/dashboard"
           element={
             isLoggedIn ? (
-              <div style={{ 
-                display: "flex", 
-                height: "100vh", // Altura completa
-                width: "66.11vw"  // Ancho completo del navegador
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  height: "100vh",
+                  width: "66.11vw",
+                }}
+              >
                 {/* Sidebar */}
-                <Sidebar userEmail={userEmail} onLogout={handleLogout} />
-              
-                {/* Contenedor principal más ancho */}
-                <div style={{ 
-                    flex: 1, 
-                    display: "flex", 
-                    justifyContent: "center", // Centrado horizontalmente
-                    alignItems: "flex-start", // Alineado al inicio vertical
-                    backgroundColor: "#f4f4f4", // Fondo claro
-                    padding: "20px" // Espaciado interno
-                  }}>
-                  <div style={{ 
-                  width: "95%", 
-                  maxWidth: "1800px", 
-                  textAlign: "center", 
-                  position: "relative", // Permite usar top para ajustar la posición
-                  top: "-28px" // Mueve el título hacia arriba
-                }}>
-                  <h1 style={{ fontSize: "3rem", fontWeight: "bold", marginTop: "0" }}>
-                    Sistema de Gestión Institucional
-                  </h1>
+                <Sidebar userName={userName} onLogout={handleLogout} />
+
+                {/* Contenedor principal */}
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    backgroundColor: "#f4f4f4",
+                    padding: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "95%",
+                      maxWidth: "1800px",
+                      textAlign: "center",
+                      position: "relative",
+                      top: "-28px",
+                    }}
+                  >
+                    <h1
+                      style={{
+                        fontSize: "3rem",
+                        fontWeight: "bold",
+                        marginTop: "0",
+                      }}
+                    >
+                      Sistema de Gestión Institucional
+                    </h1>
+                  </div>
                 </div>
-                </div>
-                </div>
-                         
+              </div>
             ) : (
               <Navigate to="/" />
             )

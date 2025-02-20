@@ -3,22 +3,23 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import logo from "../assets/logo.png";
 
 // Configurar SweetAlert2 para React
 const MySwal = withReactContent(Swal);
 
-// Importa el logo desde la carpeta assets
-import logo from "../assets/logo.png";
+// Obtén la URL del backend desde la variable de entorno
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 function LoginRegister({ onLogin }) {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
-  const [showLogin, setShowLogin] = useState(true); // Alternar entre Login y Registro
-  const [showToggleButton, setShowToggleButton] = useState(false); // Controlar visibilidad del botón, por defecto oculto
+  const [showLogin, setShowLogin] = useState(true);
+  const [showToggleButton, setShowToggleButton] = useState(false);
 
-  // Alternar entre formularios
+  // Alternar entre formularios de Login y Registro
   const toggleForm = () => {
     setShowLogin(!showLogin);
-    setFormData({ name: "", email: "", password: "" }); // Limpia los campos al alternar
+    setFormData({ name: "", email: "", password: "" });
   };
 
   // Manejar cambios en los campos del formulario
@@ -26,46 +27,41 @@ function LoginRegister({ onLogin }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Manejar el envío del formulario
+  // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (showLogin) {
-        // Inicio de sesión
-        const response = await axios.post("http://localhost:5000/login", {
+        // Llamada para iniciar sesión
+        const response = await axios.post(`${API_URL}/login`, {
           email: formData.email,
           password: formData.password,
         });
-
-        // Guardar el token y el nombre en localStorage
-        localStorage.setItem("token", response.data.token); // Guarda el token
-        localStorage.setItem("userName", response.data.name); // Guarda el nombre
-
-        // Mostrar alerta de inicio de sesión exitoso
+        // Guardar token y nombre del usuario en localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userName", response.data.name);
+        // Mostrar mensaje de éxito y notificar al padre
         MySwal.fire({
           title: "Éxito",
           text: response.data.message,
           icon: "success",
         }).then(() => {
-          // Llama a la función `onLogin` pasando el nombre del usuario
           onLogin(response.data.name);
         });
-
       } else {
-        // Registro de usuario
-        const response = await axios.post("http://localhost:5000/register", {
+        // Llamada para registrar usuario
+        const response = await axios.post(`${API_URL}/register`, {
           name: formData.name,
           email: formData.email,
           password: formData.password,
         });
-
         MySwal.fire({
           title: "Éxito",
           text: response.data.message,
           icon: "success",
         });
-        setFormData({ name: "", email: "", password: "" }); // Limpia los campos del formulario
-        setShowLogin(true); // Cambia al formulario de Login
+        setFormData({ name: "", email: "", password: "" });
+        setShowLogin(true);
       }
     } catch (error) {
       MySwal.fire({
@@ -78,7 +74,7 @@ function LoginRegister({ onLogin }) {
 
   return (
     <div className="form-container">
-      <img src={logo} alt="Logo" /> {/* Logo */}
+      <img src={logo} alt="Logo" />
       <h1>{showLogin ? "Iniciar Sesión" : "Registrarse"}</h1>
       <form onSubmit={handleSubmit}>
         {/* Campo de nombre solo para registro */}
