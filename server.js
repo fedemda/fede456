@@ -57,23 +57,32 @@ db.connect(err => {
 // Middleware para verificar el token de autenticación
 const verifyToken = (req, res, next) => {
   let token = req.headers["authorization"];
+
   if (!token) {
-    console.log("No se recibió token en la solicitud");
+    console.log("❌ No se recibió token en la solicitud");
     return res.status(403).json({ message: "Token requerido" });
   }
+
   if (token.startsWith("Bearer ")) {
     token = token.slice(7);
   }
+
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    console.log("Token decodificado correctamente:", decoded);
+    console.log("✅ Token decodificado correctamente:", decoded);
     req.user = decoded;
     next();
   } catch (error) {
-    console.log("Error al verificar token:", error);
+    console.error("❌ Error al verificar token:", error.name);
+
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token expirado, inicie sesión nuevamente" });
+    }
+
     return res.status(401).json({ message: "Token inválido" });
   }
 };
+
 
 // Ruta para registrar usuarios
 app.post("/register", async (req, res) => {
@@ -117,7 +126,7 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
     const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
     res.status(200).json({ message: "Inicio de sesión exitoso", token, name: user.name });
   } catch (err) {
