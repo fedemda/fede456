@@ -70,6 +70,7 @@ const verifyToken = (req, res, next) => {
 
 
 
+
 // Ruta para registrar usuarios
 app.post("/register", async (req, res) => {
   let { name, email, password } = req.body;
