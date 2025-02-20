@@ -23,7 +23,10 @@ const SECRET_KEY = "mi_clave_secreta";
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: "*", // Ajusta esto al origen de tu front si es necesario
+  optionsSuccessStatus: 200
+}));
 
 // Conexión a PostgreSQL
 const db = new Client({
@@ -559,7 +562,7 @@ app.get("/generar-analitico", async (req, res) => {
     const resolucionValor = /^\d+$/.test(resolucionLimpia) ? Number(resolucionLimpia) : resolucionLimpia;
     sheet.cell("E9").value(resolucionValor);
     sheet.cell("E9").style("numberFormat", "0");
-    // Consulta en la base de datos para obtener los registros correspondientes
+    // Consulta en la base de datos para obtener registros
     const sql = `
       SELECT materia, l_f, fecha_aprobacion, numeros, letras 
       FROM calificaciones 
