@@ -23,10 +23,15 @@ const SECRET_KEY = "mi_clave_secreta";
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors({
-  origin: "*", // Ajusta esto al origen de tu front si es necesario
+
+// Configurar CORS con opciones específicas
+const corsOptions = {
+  origin: "https://89app.netlify.app/", // Cambia este valor por el origen de tu front-end
+  credentials: true,
   optionsSuccessStatus: 200
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Conexión a PostgreSQL
 const db = new Client({
