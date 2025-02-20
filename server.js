@@ -51,7 +51,7 @@ db.connect(err => {
 const verifyToken = (req, res, next) => {
   let token = req.headers["authorization"];
   if (!token) {
-    console.log("No se recibió token");
+    console.log("No se recibió token en la solicitud");
     return res.status(403).json({ message: "Token requerido" });
   }
   if (token.startsWith("Bearer ")) {
@@ -59,7 +59,7 @@ const verifyToken = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    console.log("Token decodificado:", decoded);
+    console.log("Token decodificado correctamente:", decoded);
     req.user = decoded;
     next();
   } catch (error) {
@@ -67,7 +67,6 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Token inválido" });
   }
 };
-
 
 
 
