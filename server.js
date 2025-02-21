@@ -28,8 +28,12 @@ const db = new Client({
   port: process.env.DB_PORT || 5432,
   user: process.env.DB_USER || "registro_usuarios_4059_user",
   password: process.env.DB_PASS || "P2Yoeom9EtZMBKjPKs4eJTfnV8vWPKj8",
-  database: process.env.DB_DATABASE || "registro_usuarios_4059"
+  database: process.env.DB_DATABASE || "registro_usuarios_4059",
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 db.connect()
   .then(() => console.log("Conectado a la base de datos PostgreSQL"))
