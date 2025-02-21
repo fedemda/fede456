@@ -681,13 +681,14 @@ app.get("/generar-analitico", async (req, res) => {
   }
 });
 
-// Servir archivos estáticos desde la carpeta "public"
-app.use(express.static("public"));
+// Servir archivos estáticos desde la carpeta "build"
+app.use(express.static(path.join(__dirname, "build")));
 
-// Fallback route: para cualquier ruta que no coincida con las API, se envía el index.html
+// Ruta catch-all para redirigir cualquier solicitud a index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
+
 
 // Endpoint POST para insertar calificaciones
 app.post("/calificaciones", verifyToken, async (req, res) => {
