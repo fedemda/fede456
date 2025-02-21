@@ -64,7 +64,7 @@ const verifyToken = (req, res, next) => {
   }
 
   if (token.startsWith("Bearer ")) {
-    token = token.slice(7);
+    token = token.slice(7); // Eliminar "Bearer "
   }
 
   try {
@@ -82,6 +82,7 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Token inválido" });
   }
 };
+
 
 
 // Ruta para registrar usuarios
