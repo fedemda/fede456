@@ -32,9 +32,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
-app.use(cors(corsOptions));
-
 // Conexión a PostgreSQL
 const db = new Client({
   host: process.env.DB_HOST || "dpg-cupt41a3esus738iik5g-a.oregon-postgres.render.com",
@@ -84,8 +81,6 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Token inválido" });
   }
 };
-
-
 
 // Ruta para registrar usuarios
 app.post("/register", async (req, res) => {
@@ -165,7 +160,6 @@ app.post("/getUserName", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Error del servidor" });
   }
 });
-
 
 // Ruta para agregar una nueva carrera
 app.post("/carreras", verifyToken, async (req, res) => {
@@ -689,6 +683,11 @@ app.get("/generar-analitico", async (req, res) => {
 
 // Servir archivos estáticos desde la carpeta "public"
 app.use(express.static("public"));
+
+// Fallback route: para cualquier ruta que no coincida con las API, se envía el index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // Endpoint POST para insertar calificaciones
 app.post("/calificaciones", verifyToken, async (req, res) => {
