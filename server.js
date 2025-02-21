@@ -26,10 +26,12 @@ app.use(bodyParser.json());
 
 // Configurar CORS con opciones específicas
 const corsOptions = {
-  origin: "https://89app.netlify.app", // Cambia este valor por el origen de tu front-end
+  origin: ["https://89app.netlify.app", "http://localhost:3000"],
   credentials: true,
   optionsSuccessStatus: 200
 };
+app.use(cors(corsOptions));
+
 
 app.use(cors(corsOptions));
 
