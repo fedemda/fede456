@@ -137,19 +137,32 @@ app.post("/login", async (req, res) => {
 
 // Ruta protegida para obtener el nombre del usuario
 app.post("/getUserName", verifyToken, async (req, res) => {
+  console.log("🔹 Token recibido:", req.headers["authorization"]);
+
+  if (!req.user) {
+    console.log("❌ No se pudo extraer el usuario del token.");
+    return res.status(401).json({ message: "Token inválido o expirado" });
+  }
+
+  console.log("✅ Usuario autenticado:", req.user.email);
+
   const email = req.user.email;
   try {
     const result = await db.query("SELECT name FROM users WHERE email = $1", [email]);
+
     if (result.rows.length > 0) {
+      console.log("✅ Nombre obtenido:", result.rows[0].name);
       res.json({ name: result.rows[0].name });
     } else {
+      console.log("❌ Usuario no encontrado en la base de datos.");
       res.status(404).json({ message: "Usuario no encontrado" });
     }
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error en la consulta SQL:", err);
     res.status(500).json({ message: "Error del servidor" });
   }
 });
+
 
 // Ruta para agregar una nueva carrera
 app.post("/carreras", verifyToken, async (req, res) => {
