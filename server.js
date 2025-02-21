@@ -20,7 +20,12 @@ const SECRET_KEY = "mi_clave_secreta";
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+// Configurar CORS para permitir tanto el dominio de producción como el local
+app.use(cors({
+  origin: ["https://89app.netlify.app", "http://localhost:3000"],
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 
 // Conexión a PostgreSQL usando los datos de Render
 const db = new Client({
@@ -34,7 +39,6 @@ const db = new Client({
   }
 });
 
-
 db.connect()
   .then(() => console.log("Conectado a la base de datos PostgreSQL"))
   .catch(err => {
@@ -42,7 +46,7 @@ db.connect()
     process.exit();
   });
 
-// Middleware para verificar el token de autenticación
+// Middleware para verificar el token
 const verifyToken = (req, res, next) => {
   let token = req.headers["authorization"];
   if (!token) {
@@ -66,15 +70,16 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// -------------------------------------------------
+// ==================================================
+// RUTAS DE API
+// ==================================================
+
 // Registro de usuarios
-// -------------------------------------------------
 app.post("/register", async (req, res) => {
   let { name, email, password } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ message: "Todos los campos son obligatorios" });
   }
-  // Convertir la primera letra del nombre en mayúscula
   name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   try {
     const userResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -90,12 +95,11 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// -------------------------------------------------
 // Inicio de sesión
-// -------------------------------------------------
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ message: "Todos los campos son obligatorios" });
+  if (!email || !password)
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
   try {
     const userResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
     if (userResult.rows.length === 0) {
@@ -103,7 +107,8 @@ app.post("/login", async (req, res) => {
     }
     const user = userResult.rows[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(401).json({ message: "Contraseña incorrecta" });
+    if (!isPasswordValid)
+      return res.status(401).json({ message: "Contraseña incorrecta" });
     const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
     res.status(200).json({ message: "Inicio de sesión exitoso", token, name: user.name });
   } catch (err) {
@@ -112,9 +117,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// -------------------------------------------------
-// Obtener el nombre del usuario (token requerido)
-// -------------------------------------------------
+// Obtener nombre del usuario (token requerido)
 app.post("/getUserName", verifyToken, async (req, res) => {
   const email = req.user.email;
   try {
@@ -130,10 +133,7 @@ app.post("/getUserName", verifyToken, async (req, res) => {
   }
 });
 
-// -------------------------------------------------
 // Carreras
-// -------------------------------------------------
-// Agregar una nueva carrera
 app.post("/carreras", verifyToken, async (req, res) => {
   const { categoria, subcategoria, resolucion, cohorte, duracion, horas } = req.body;
   if (!categoria || !subcategoria || !resolucion || !cohorte || !duracion || !horas) {
@@ -144,10 +144,7 @@ app.post("/carreras", verifyToken, async (req, res) => {
     if (checkResult.rows.length > 0) {
       return res.status(400).json({ message: "La carrera ya está cargada" });
     }
-    await db.query(
-      "INSERT INTO carreras (categoria, subcategoria, resolucion, cohorte, duracion, carga_horaria) VALUES ($1, $2, $3, $4, $5, $6)",
-      [categoria, subcategoria, resolucion, cohorte, duracion, horas]
-    );
+    await db.query("INSERT INTO carreras (categoria, subcategoria, resolucion, cohorte, duracion, carga_horaria) VALUES ($1, $2, $3, $4, $5, $6)", [categoria, subcategoria, resolucion, cohorte, duracion, horas]);
     res.status(201).json({ message: "Carrera guardada correctamente" });
   } catch (err) {
     console.error(err);
@@ -155,7 +152,7 @@ app.post("/carreras", verifyToken, async (req, res) => {
   }
 });
 
-// Buscar carreras (por búsqueda)
+// Buscar carreras
 app.get("/carreras", verifyToken, async (req, res) => {
   const busqueda = req.query.busqueda || "";
   try {
@@ -176,12 +173,10 @@ app.get("/carreras", verifyToken, async (req, res) => {
 app.put("/carreras/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const { subcategoria, resolucion, cohorte, duracion, carga_horaria } = req.body;
-  if (!id) return res.status(400).json({ message: "ID no definido." });
+  if (!id)
+    return res.status(400).json({ message: "ID no definido." });
   try {
-    await db.query(
-      "UPDATE carreras SET subcategoria = $1, resolucion = $2, cohorte = $3, duracion = $4, carga_horaria = $5 WHERE id = $6",
-      [subcategoria, resolucion, cohorte, duracion, carga_horaria, id]
-    );
+    await db.query("UPDATE carreras SET subcategoria = $1, resolucion = $2, cohorte = $3, duracion = $4, carga_horaria = $5 WHERE id = $6", [subcategoria, resolucion, cohorte, duracion, carga_horaria, id]);
     res.json({ message: "Carrera actualizada correctamente" });
   } catch (err) {
     console.error(err);
@@ -192,7 +187,8 @@ app.put("/carreras/:id", verifyToken, async (req, res) => {
 // Eliminar carrera
 app.delete("/carreras/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
-  if (!id) return res.status(400).json({ message: "ID no definido." });
+  if (!id)
+    return res.status(400).json({ message: "ID no definido." });
   try {
     const result = await db.query("DELETE FROM carreras WHERE id = $1", [id]);
     if (result.rowCount === 0) {
@@ -205,21 +201,7 @@ app.delete("/carreras/:id", verifyToken, async (req, res) => {
   }
 });
 
-// (Duplicada) Ruta para obtener todas las subcategorías (carreras)
-app.get("/carreras", async (req, res) => {
-  try {
-    const result = await db.query("SELECT id, subcategoria FROM carreras");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error en el servidor" });
-  }
-});
-
-// -------------------------------------------------
 // Materias
-// -------------------------------------------------
-// Agregar una nueva materia
 app.post("/materias", verifyToken, async (req, res) => {
   try {
     let { carrera, nombre_materia, anio } = req.body;
@@ -281,7 +263,8 @@ app.put("/materias/:id", verifyToken, async (req, res) => {
 // Eliminar materia
 app.delete("/materias/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
-  if (!id) return res.status(400).json({ message: "ID no definido." });
+  if (!id)
+    return res.status(400).json({ message: "ID no definido." });
   try {
     await db.query("DELETE FROM materias WHERE id = $1", [id]);
     res.json({ message: "Materia eliminada correctamente" });
@@ -291,9 +274,7 @@ app.delete("/materias/:id", verifyToken, async (req, res) => {
   }
 });
 
-// -------------------------------------------------
-// getUserInfo (duplicado, se deja igual)
-// -------------------------------------------------
+// getUserInfo (duplicado)
 app.post("/getUserInfo", verifyToken, async (req, res) => {
   const email = req.user.email;
   try {
@@ -309,20 +290,14 @@ app.post("/getUserInfo", verifyToken, async (req, res) => {
   }
 });
 
-// -------------------------------------------------
 // Estudiantes
-// -------------------------------------------------
-// Agregar un nuevo estudiante
 app.post("/estudiantes", verifyToken, async (req, res) => {
   const { carrera, apellido_y_nombre, dni, fecha_de_nacimiento, telefono, email } = req.body;
   if (!carrera || !apellido_y_nombre || !dni || !fecha_de_nacimiento || !email) {
     return res.status(400).json({ message: "Todos los campos obligatorios deben completarse." });
   }
   try {
-    await db.query(
-      "INSERT INTO estudiantes (carrera, apellido_y_nombre, dni, fecha_de_nacimiento, telefono, email) VALUES ($1, $2, $3, $4, $5, $6)",
-      [carrera, apellido_y_nombre, dni, fecha_de_nacimiento, telefono || null, email]
-    );
+    await db.query("INSERT INTO estudiantes (carrera, apellido_y_nombre, dni, fecha_de_nacimiento, telefono, email) VALUES ($1, $2, $3, $4, $5, $6)", [carrera, apellido_y_nombre, dni, fecha_de_nacimiento, telefono || null, email]);
     res.status(201).json({ message: "Estudiante guardado exitosamente." });
   } catch (error) {
     if (error.code === "23505") {
@@ -332,7 +307,6 @@ app.post("/estudiantes", verifyToken, async (req, res) => {
   }
 });
 
-// Buscar estudiantes y DNI duplicados
 app.get("/estudiantes", verifyToken, async (req, res) => {
   const busqueda = req.query.busqueda || "";
   try {
@@ -349,7 +323,6 @@ app.get("/estudiantes", verifyToken, async (req, res) => {
   }
 });
 
-// Actualizar estudiante
 app.put("/estudiantes/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const { apellido_y_nombre, dni, fecha_de_nacimiento, telefono, email } = req.body;
@@ -369,7 +342,6 @@ app.put("/estudiantes/:id", verifyToken, async (req, res) => {
   }
 });
 
-// Eliminar estudiante
 app.delete("/estudiantes/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).json({ message: "ID no definido." });
@@ -385,7 +357,6 @@ app.delete("/estudiantes/:id", verifyToken, async (req, res) => {
   }
 });
 
-// Validar DNI en edición de estudiantes
 app.get("/estudiantes/validar-dni", async (req, res) => {
   const { dni, id } = req.query;
   if (!dni || dni.length !== 8) {
@@ -406,7 +377,6 @@ app.get("/estudiantes/validar-dni", async (req, res) => {
   }
 });
 
-// Buscar un estudiante por DNI
 app.get("/estudiantes/:dni", verifyToken, async (req, res) => {
   const { dni } = req.params;
   try {
@@ -441,8 +411,7 @@ app.get("/estudiantes/:dni", verifyToken, async (req, res) => {
   }
 });
 
-// -------------------------------------------------
-// Materias/filtrar GET:
+// Materias/filtrar
 app.get("/materias/filtrar", verifyToken, async (req, res) => {
   let { carrera, anio } = req.query;
   console.log("📩 Parámetros recibidos en el backend:");
@@ -454,7 +423,7 @@ app.get("/materias/filtrar", verifyToken, async (req, res) => {
   carrera = carrera.trim().toLowerCase();
   const sql = "SELECT id, nombre_materia, carrera, anio FROM materias WHERE LOWER(TRIM(carrera)) = $1 AND anio = $2";
   console.log("🔍 Consulta SQL ejecutada:", sql);
-  console.log("🔍 Valores enviados a MySQL:", [carrera, anio]);
+  console.log("🔍 Valores enviados a PostgreSQL:", [carrera, anio]);
   try {
     const result = await db.query(sql, [carrera, anio]);
     console.log("✅ Materias filtradas enviadas al frontend:", result.rows);
@@ -465,9 +434,7 @@ app.get("/materias/filtrar", verifyToken, async (req, res) => {
   }
 });
 
-// -------------------------------------------------
 // Función convertDate
-// -------------------------------------------------
 function convertDate(dateStr) {
   if (!dateStr) return "";
   if (dateStr.indexOf("-") !== -1) return dateStr;
@@ -477,8 +444,7 @@ function convertDate(dateStr) {
   return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
 }
 
-// -------------------------------------------------
-// Calificaciones GET:
+// Calificaciones GET
 app.get("/calificaciones", verifyToken, async (req, res) => {
   const { dni, materia } = req.query;
   if (!dni || !materia) {
@@ -494,7 +460,7 @@ app.get("/calificaciones", verifyToken, async (req, res) => {
   }
 });
 
-// Calificaciones PUT:
+// Calificaciones PUT
 app.put("/calificaciones/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const { dni, ap_nombre, carrera, resolucion, materia, curso, l_f, fecha_aprobacion, numeros, letras } = req.body;
@@ -518,9 +484,7 @@ app.put("/calificaciones/:id", verifyToken, async (req, res) => {
   }
 });
 
-// -------------------------------------------------
 // Generar Analítico Parcial con xlsx-populate
-// -------------------------------------------------
 app.get("/generar-analitico", async (req, res) => {
   const { dni, apNombre, archivo, resolucion, carrera } = req.query;
   if (!dni || !apNombre || !archivo || !resolucion || !carrera) {
@@ -638,12 +602,19 @@ app.get("/generar-analitico", async (req, res) => {
 });
 
 // =====================================================
-// Servir archivos estáticos desde la carpeta "public"
+// Servir archivos estáticos desde la carpeta "build"
 // =====================================================
-app.use(express.static("public"));
+// Si tienes tu build de React en la carpeta "build", usa lo siguiente:
+app.use(express.static(path.join(__dirname, "build")));
 
-// -------------------------------------------------
-// Calificaciones POST:
+// Ruta catch-all para redirigir cualquier solicitud al index.html de React
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+// =====================================================
+// Calificaciones POST
+// =====================================================
 app.post("/calificaciones", verifyToken, async (req, res) => {
   try {
     const { dni, ap_nombre, carrera, resolucion, materia, curso, l_f, fecha_aprobacion, numeros, letras } = req.body;
@@ -662,13 +633,6 @@ app.post("/calificaciones", verifyToken, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error al insertar calificación" });
   }
-});
-
-// ----------------------------------------------------
-// Ruta catch-all para redirigir cualquier solicitud a index.html
-// ----------------------------------------------------
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Iniciar el servidor
